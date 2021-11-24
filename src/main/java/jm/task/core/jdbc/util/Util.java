@@ -15,7 +15,7 @@ import java.util.Properties;
 
 public class Util {
 
-    private static final String Url = "jdbc:mysql://localhost/new_schema";
+    private static final String Url = "jdbc:mysql://localhost/";
     private static final String Username = "root";
     private static final String Password = "76315as";
     private static final String Driver = "com.mysql.cj.jdbc.Driver";
@@ -37,12 +37,6 @@ public class Util {
 
         } return sessionFactory;
     }
-
-
-
-
-
-
 
     public static Connection getConnection()  {
         Connection connection = null;

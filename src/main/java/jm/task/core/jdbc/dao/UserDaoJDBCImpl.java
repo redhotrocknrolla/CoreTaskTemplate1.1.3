@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class UserDaoJDBCImpl implements UserDao {
-    Connection connection = Util.getConnection();
+    private Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
 
@@ -20,9 +20,14 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users(id BIGINT NOT NULL AUTO_INCREMENT," +
                     "name VARCHAR (45)NOT NULL, lastname VARCHAR (45) NOT NULL,age TINYINT NOT NULL, PRIMARY KEY (id)) ");
             connection.commit();
-            connection.rollback();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -31,9 +36,14 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate("DROP TABLE IF EXISTS users");
             System.out.println("Таблица users удалена");
             connection.commit();
-            connection.rollback();
         } catch (SQLException e) {
             e.printStackTrace();
+        } if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -46,10 +56,15 @@ public class UserDaoJDBCImpl implements UserDao {
             ps.setByte(3, age);
             ps.executeUpdate();
             connection.commit();
-            connection.rollback();
             System.out.println("User с именем " + name + " добавлен в базу данных");
         } catch (SQLException e) {
             System.out.println("Users не добавлены");
+        } if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -57,10 +72,15 @@ public class UserDaoJDBCImpl implements UserDao {
         String query = "DELETE FROM users WHERE 'id' = id LIMIT 1L";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             connection.commit();
-            connection.rollback();
             System.out.println("User c id - " + id + " удален из базы данных");
         } catch (SQLException e) {
             System.out.println("User не удален");
+        } if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -77,22 +97,33 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.add(new User(id, name, lastname, age));
             }
             connection.commit();
-            connection.rollback();
             System.out.println(user);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return user;
     }
 
     @Override
-    public void cleanUsersTable() {
+    public void cleanUsersTable()  {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("TRUNCATE TABLE users");
             connection.commit();
-            connection.rollback();
         } catch (SQLException e) {
             e.printStackTrace();
+        } if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 }
